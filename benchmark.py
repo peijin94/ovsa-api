@@ -16,10 +16,10 @@ def time_request(method: str, url: str) -> float:
 
 def run_benchmark(base_url: str, iterations: int) -> None:
     endpoints = [
-        "/api/ephm/el",
-        "/api/ephm/az",
-        "/api/ephm/sunup",
-        "/api/ephm/info",
+        "/ephm/el",
+        "/ephm/az",
+        "/ephm/sunup",
+        "/ephm/info",
     ]
 
     print(f"Benchmarking {len(endpoints)} endpoints for {iterations} iterations each")

@@ -113,21 +113,21 @@ def _get_ephm_all() -> dict:
     return _EPHM_CACHE["data"]
 
 
-@app.get("/api/ephm/el", response_class=PlainTextResponse)
+@app.get("/ephm/el", response_class=PlainTextResponse)
 async def ephm_el() -> str:
     """Return current Sun elevation (altitude) in degrees at OVRO."""
     ephm = _get_ephm_all()
     return f"{ephm['alt_deg']:.6f}"
 
 
-@app.get("/api/ephm/az", response_class=PlainTextResponse)
+@app.get("/ephm/az", response_class=PlainTextResponse)
 async def ephm_az() -> str:
     """Return current Sun azimuth in degrees at OVRO."""
     ephm = _get_ephm_all()
     return f"{ephm['az_deg']:.6f}"
 
 
-@app.get("/api/ephm/sunup", response_class=PlainTextResponse)
+@app.get("/ephm/sunup", response_class=PlainTextResponse)
 async def ephm_sunup() -> str:
     """
     Check if the Sun is above the horizon.
@@ -138,7 +138,7 @@ async def ephm_sunup() -> str:
     return "1" if ephm["sunup_flag"] == 1 else "0"
 
 
-@app.get("/api/ephm/info", response_class=PlainTextResponse)
+@app.get("/ephm/info", response_class=PlainTextResponse)
 async def ephm_info() -> str:
     """
     Return a human-readable string summarizing current Sun ephemeris at OVRO.

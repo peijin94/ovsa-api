@@ -2,31 +2,33 @@
 
 This repository provides a small FastAPI-based service that serves Sun ephemeris information for the **OVRO** site and a simple benchmarking script for the API.
 
-The API is intended to be reachable under a base like:
+The API is intended to be reachable under bases like:
 
-- **Base URL**: `http://ovsa.njit.edu:8012`
-- **API root**: `/api/ephm`
+- **Production**: `http://ovsa.njit.edu/api`
+- **Local testing**: `http://localhost:8012`
 
-Below, all paths are relative to the base URL.
+Below, all paths are relative to these bases and use `/ephm/...`. In production the
+reverse proxy typically maps `/api/ephm/...` to the same FastAPI app paths as
+`http://localhost:8012/ephm/...`.
 
 ### Endpoints
 
-- **`GET /api/ephm/el`**
+- **`GET /ephm/el`**
   - **Description**: Returns the current Sun elevation (altitude) in degrees at OVRO.
   - **Response**: Plain text, a floating-point number with 6 decimal places.
     - Example: `37.123456`
 
-- **`GET /api/ephm/az`**
+- **`GET /ephm/az`**
   - **Description**: Returns the current Sun azimuth in degrees at OVRO.
   - **Response**: Plain text, a floating-point number with 6 decimal places.
     - Example: `145.987654`
 
-- **`GET /api/ephm/sunup`**
+- **`GET /ephm/sunup`**
   - **Description**: Indicates whether the Sun is above the horizon.
   - **Logic**: `1` if Sun altitude \(> 0^\circ\), otherwise `0`.
   - **Response**: Plain text, either `0` or `1`.
 
-- **`GET /api/ephm/info`**
+- **`GET /ephm/info`**
   - **Description**: Returns a single human-readable summary string of current Sun ephemeris values at OVRO.
   - **Response**: Plain text string containing:
     - Current UTC time (`time=...`)
@@ -62,9 +64,9 @@ Below, all paths are relative to the base URL.
   python benchmark.py --base-url http://localhost:8012 --iterations 100
   ```
   - Benchmarks:
-    - `/api/ephm/el`
-    - `/api/ephm/az`
-    - `/api/ephm/sunup`
-    - `/api/ephm/info`
+    - `/ephm/el`
+    - `/ephm/az`
+    - `/ephm/sunup`
+    - `/ephm/info`
   - Reports latency statistics (**avg**, **p50**, **p95**, **min**, **max**) in milliseconds for each endpoint.
 
