@@ -1,0 +1,15 @@
+[Unit]
+Description=OVSA FastAPI service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ovsa-api
+ExecStart=%h/miniconda3/bin/python %h/ovsa-api/api_server.py
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target

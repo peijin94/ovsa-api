@@ -1,9 +1,13 @@
 from datetime import datetime, timedelta
+import math
 
 import ephem
 import pytz
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse
+from pydantic import BaseModel
+
+from flare_nowcast import nowcast_from_flux3ch
 
 
 app = FastAPI()
@@ -17,6 +21,12 @@ OVRO_ELEV_M = 1222  # meters
 
 # Simple in-memory cache for ephemeris data
 _EPHM_CACHE: dict | None = None
+
+
+class FlareNowcastRequest(BaseModel):
+    """Current flux in SFU, ordered as 40, 60, and 80 MHz."""
+
+    flux3ch: list[float]
 
 
 def _get_observer() -> ephem.Observer:
@@ -147,8 +157,23 @@ async def ephm_info() -> str:
     return ephm["info"]
 
 
+@app.post("/flare/nowcast")
+async def flare_nowcast(request: FlareNowcastRequest) -> dict:
+    """Return GOES flare-class probabilities from 40/60/80 MHz flux in SFU."""
+    if len(request.flux3ch) != 3:
+        raise HTTPException(
+            status_code=422,
+            detail="flux3ch must contain exactly three values",
+        )
+    if not all(math.isfinite(flux) for flux in request.flux3ch):
+        raise HTTPException(
+            status_code=422,
+            detail="flux3ch values must be finite numbers",
+        )
+    return nowcast_from_flux3ch(request.flux3ch)
+
+
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8012)
-
