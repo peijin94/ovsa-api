@@ -93,7 +93,10 @@ reverse proxy typically maps `/api/ephm/...` to the same FastAPI app paths as
   pip install -r requirements.txt
   python api_server.py
   ```
-  - The server listens on `0.0.0.0:8012`.
+  - The server listens on `127.0.0.1:8012` by default, which is what the reverse
+    proxy expects (`ProxyPass /api/ http://127.0.0.1:8012/`). Override with
+    `API_HOST` / `API_PORT` if you need a different interface or port; the
+    service has no authentication, so keep it on loopback in production.
 
 ### Benchmarking the API
 

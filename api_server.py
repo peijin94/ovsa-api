@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import math
+import os
 
 import ephem
 import pytz
@@ -176,4 +177,9 @@ async def flare_nowcast(request: FlareNowcastRequest) -> dict:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8012)
+    # Loopback by default: the reverse proxy (ProxyPass /api/ -> 127.0.0.1:8012)
+    # is the only intended ingress. Override with API_HOST / API_PORT only when
+    # you really want to expose the service on another interface.
+    host = os.getenv("API_HOST", "127.0.0.1")
+    port = int(os.getenv("API_PORT", "8012"))
+    uvicorn.run(app, host=host, port=port)
